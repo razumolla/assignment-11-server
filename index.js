@@ -1,9 +1,10 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
-const port = 5000
+const jwt = require('jsonwebtoken');
+const port = process.env.PORT || 5000;
 
 app.use(cors())
 app.use(express.json())
@@ -18,11 +19,21 @@ async function run() {
 
         const productCollection = client.db("carDealer").collection("products");
 
+        // send data to server from client
         app.post("/addpd", async (req, res) => {
             const product = req.body;
             const result = await productCollection.insertOne(product);
             res.send(result)
         })
+        // get all product 
+        app.get("/product", async (req, res) => {
+            const query = {};
+            const cursor = productCollection.find(query);
+            const services = await cursor.toArray();
+            res.send(services)
+        })
+
+
 
     } finally {
         // await client.close();
@@ -37,12 +48,10 @@ run().catch(console.dir);
 
 
 
-
-
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Buy Your Dream Car!')
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Listening on port ${port}`)
 })
