@@ -46,7 +46,20 @@ async function run() {
             const result = await productCollection.deleteOne(query);
             res.send(result);
         })
-
+        // update user > Quantity
+        app.put('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateStoke = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true }
+            const updatedStoke = {
+                $set: {
+                    quantity: updateStoke.quantity
+                }
+            }
+            const result = await productCollection.updateOne(filter, updatedStoke, options);
+            res.send(result);
+        })
 
 
 
