@@ -33,7 +33,13 @@ async function run() {
             res.send(services)
         })
 
-
+        //get one product to > Product Details
+        app.get('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const product = await productCollection.findOne(query);
+            res.send(product)
+        })
 
     } finally {
         // await client.close();
